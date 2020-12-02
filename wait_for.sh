@@ -8,7 +8,8 @@ trap "exit 1" TERM
 TOP_PID=$$
 
 KUBECTL_ARGS=""
-WAIT_TIME="${WAIT_TIME:-2}" # seconds
+INITIAL_WAIT_TIME="${INITIAL_WAIT_TIME:-2}" # seconds
+WAIT_TIME="${WAIT_TIME:-0}" # seconds
 DEBUG="${DEBUG:-0}"
 TREAT_ERRORS_AS_READY=0
 
@@ -232,6 +233,11 @@ main() {
     shift
 
     KUBECTL_ARGS="${*}"
+
+    if [ $INITIAL_WAIT_TIME -gt 0 ]; then
+        echo 'Waiting initial delay...'
+        sleep "$INITIAL_WAIT_TIME"
+    fi
 
     wait_for_resource "$main_resource" "$main_name"
 
